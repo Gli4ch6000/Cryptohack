@@ -11,3 +11,78 @@ Connect at nc socket.cryptohack.org 11112
 
 
 they have give us a python file called "telnetlib_example.py"
+
+
+the file has a code and when I run it i got this::
+
+-------------------------------------------------------
+b"Welcome to netcat's flag shop!\n"
+b'What would you like to buy?\n'
+b"I only speak JSON, I hope that's ok.\n"
+b'\n'
+{'error': 'Sorry! All we have to sell are flags.'}
+
+.......................................................
+
+now lets look at the code
+
+
+-------------------------------------------------------------------
+
+#!/usr/bin/env python3
+
+import telnetlib
+import json
+
+HOST = "socket.cryptohack.org" #<<<-------------- we are connecting to the server
+PORT = 11112 #<<<<<-------------- in this port
+
+tn = telnetlib.Telnet(HOST, PORT)
+
+
+def readline():
+    return tn.read_until(b"\n")
+
+def json_recv():
+    line = readline()
+    return json.loads(line.decode())
+
+def json_send(hsh):
+    request = json.dumps(hsh).encode()
+    tn.write(request)
+
+
+print(readline())
+print(readline())
+print(readline())
+print(readline())
+
+
+request = {
+    "buy": "clothes"  # we are giving the program a request for "clothes" that means the request prevents the flag from showing instead shows a different message
+} #so we are replace "clothes" with "flag" lets see what we get as the output
+json_send(request)
+
+response = json_recv()
+
+print(response)
+
+------------------------------------------------------------------------------------------------------
+
+------------------------------- out-put ---------------------------------
+b"Welcome to netcat's flag shop!\n"
+b'What would you like to buy?\n'
+b"I only speak JSON, I hope that's ok.\n"
+b'\n'
+{'flag': 'crypto{***************}'} #sorry guys i won't show the flag pls try the code and get it yourself
+
+-------------------------------------------------------------------------
+
+
+
+thank you
+
+
+
+
+
